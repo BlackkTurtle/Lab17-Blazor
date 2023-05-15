@@ -1,0 +1,42 @@
+﻿@page "/Table1Index"
+@using Lab17_Blazor.Services
+@using Lab17_Blazor.Data.Models
+@inject Table1Service table1service;
+<h3>Table1Index</h3>
+
+<EditForm Model="@table1" OnValidSubmit="HandleSubmit">
+	<label for="NameInput">Name:</label>
+	<InputText id="NameInput" @bind-Value="@table1.Name"></InputText>
+	<button type="submit"class="btn-primary">Submit</button>
+</EditForm>
+<table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var entity in entities)
+        {
+                    <tr>
+                        <td>@entity.Id</td>
+                        <td>@entity.Name</td>
+                    </tr>
+        }
+        </tbody>
+    </table>
+
+@code {
+	Table1 table1 = new Table1();
+	public async void HandleSubmit(EditContext editContext){
+		var newtable1 = (Table1)editContext.Model;
+		await table1service.PostTable1Async(newtable1);
+	}
+	private List<Table1>? entities;
+
+	protected override async Task OnInitializedAsync()
+	{
+		entities = await table1service.GetAllTable1Async();
+	}
+}
